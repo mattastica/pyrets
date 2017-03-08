@@ -96,18 +96,22 @@ class RetsSession(object):
         if not self.login_called:
             raise NoLoginException("You need to call login before search")
 
-        if limit:
+        if limit is None:
             limit = 'NONE'
+
         params = {'SearchType': resource,
                   'Class': search_class,
                   'Query': query,
                   'QueryType': 'DMQL2',
-                  'Count': '0',
+                  'Count': 1,
+                  'RestrictedIndicator': '***',
                   'Format': 'COMPACT-DECODED',
                   'Limit': limit,
                   'Select': select,
-                  'StandardNames': '0'}
+                  'StandardNames': 0}
+
         search_url = urljoin(self.base_url, self.server_info['Search'])
+        print search_url, "\n"
         if self.user_agent_passwd:
             self._set_rets_ua_authorization()
         search_response = self._session.post(search_url, params, proxies=self.proxies)
